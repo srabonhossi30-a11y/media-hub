@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MediaHub | Premium Playlist Hub</title>
+
+<!-- Favicon -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect rx='16' width='64' height='64' fill='%2300E5FF'/%3E%3Cpolygon points='24,18 48,32 24,46' fill='black'/%3E%3C/svg%3E">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+scroll-behavior:smooth;
+}
+
+body{
+background:#020617;
+color:white;
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:fixed;
+width:700px;
+height:700px;
+background:#00e5ff18;
+filter:blur(150px);
+top:-250px;
+left:-250px;
+z-index:-5;
+}
+
+body::after{
+content:"";
+position:fixed;
+width:600px;
+height:600px;
+background:#7c3aed18;
+filter:blur(150px);
+bottom:-220px;
+right:-200px;
+z-index:-5;
+}
+
+/* Loading */
+
+#loader{
+position:fixed;
+inset:0;
+background:#020617;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:99999;
+transition:.6s;
+}
+
+.loader-logo{
+width:90px;
+height:90px;
+border-radius:25px;
+background:linear-gradient(135deg,#00e5ff,#7c3aed);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:42px;
+font-weight:800;
+color:black;
+box-shadow:0 0 35px #00e5ff;
+animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+50%{transform:scale(1.08);}
+}
+
+.loader-text{
+margin-top:20px;
+font-size:22px;
+letter-spacing:3px;
+color:#00e5ff;
+}
+
+/* Header */
+
+header{
+
+position:sticky;
+top:0;
+z-index:999;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 7%;
+backdrop-filter:blur(18px);
+background:#ffffff08;
+border-bottom:1px solid #ffffff12;
+
+}
+
+.logo{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+}
+
+.logo-icon{
+
+width:46px;
+height:46px;
+border-radius:15px;
+background:linear-gradient(135deg,#00e5ff,#7c3aed);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+font-weight:800;
+color:black;
+box-shadow:0 0 25px #00e5ff55;
+
+}
+
+.logo span{
+
+font-size:28px;
+font-weight:800;
+background:linear-gradient(90deg,#00e5ff,#7c3aed);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+nav{
+
+display:flex;
+gap:24px;
+
+}
+
+nav a{
+
+text-decoration:none;
+color:white;
+opacity:.8;
+transition:.3s;
+
+}
+
+nav a:hover{
+
+color:#00e5ff;
+opacity:1;
+
+}
+
+/* Hero */
+
+.hero{
+
+padding:70px 7%;
+display:grid;
+grid-template-columns:1.2fr .8fr;
+gap:40px;
+align-items:center;
+
+}
+
+.hero h1{
+
+font-size:60px;
+line-height:1.05;
+margin-bottom:18px;
+
+}
+
+.hero p{
+
+opacity:.8;
+font-size:17px;
+margin-bottom:28px;
+
+}
+
+.search{
+
+display:flex;
+overflow:hidden;
+border-radius:16px;
+background:#ffffff10;
+backdrop-filter:blur(18px);
+
+}
+
+.search input{
+
+flex:1;
+padding:17px;
+background:transparent;
+border:none;
+outline:none;
+color:white;
+
+}
+
+.search button{
+
+padding:17px 24px;
+border:none;
+background:#00e5ff;
+cursor:pointer;
+font-weight:700;
+color:black;
+
+}
+
+.hero-image{
+
+height:420px;
+border-radius:28px;
+overflow:hidden;
+position:relative;
+box-shadow:0 25px 60px rgba(0,0,0,.5);
+
+}
+
+.hero-image img{
+
+width:100%;
+height:100%;
+object-fit:cover;
+transform:scale(1.08);
+
+}
+
+.hero-image::after{
+
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(180deg,transparent,#020617);
+
+}
+
+/* Playlist Grid */
+
+.section-title{
+
+padding:10px 7% 20px;
+font-size:34px;
+
+}
+
+.grid{
+
+padding:0 7% 70px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+
+}
+
+.card{
+
+background:#ffffff08;
+backdrop-filter:blur(18px);
+border:1px solid #ffffff14;
+border-radius:22px;
+overflow:hidden;
+transition:.35s;
+cursor:pointer;
+
+}
+
+.card:hover{
+
+transform:translateY(-8px);
+box-shadow:0 20px 40px rgba(0,229,255,.25);
+
+}
+
+.card img{
+
+width:100%;
+height:170px;
+object-fit:cover;
+
+}
+
+.card-body{
+
+padding:20px;
+
+}
+
+.card-body h3{
+
+margin-bottom:8px;
+
+}
+
+.card-body p{
+
+font-size:14px;
+opacity:.75;
+margin-bottom:18px;
+
+}
+
+.card button{
+
+width:100%;
+padding:13px;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#00e5ff,#7c3aed);
+color:white;
+font-weight:700;
+cursor:pointer;
+
+}
+
+/* Player */
+
+.viewer{
+
+padding:30px 7% 70px;
+
+}
+
+.player-box{
+
+background:black;
+border-radius:24px;
+overflow:hidden;
+box-shadow:0 25px 60px rgba(0,0,0,.6);
+
+}
+
+.player-box iframe{
+
+width:100%;
+height:620px;
+border:none;
+
+}
+
+.controls{
+
+display:flex;
+gap:14px;
+margin-top:18px;
+flex-wrap:wrap;
+
+}
+
+.controls button{
+
+padding:13px 22px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#ffffff10;
+color:white;
+transition:.3s;
+
+}
+
+.controls button:hover{
+
+background:#00e5ff;
+color:black;
+
+}
+
+/* Footer */
+
+footer{
+
+padding:40px;
+text-align:center;
+opacity:.6;
+border-top:1px solid #ffffff10;
+
+}
+
+/* Animation */
+
+.fade{
+
+opacity:0;
+transform:translateY(35px);
+transition:.8s;
+
+}
+
+.fade.show{
+
+opacity:1;
+transform:none;
+
+}
+
+/* Mobile */
+
+@media(max-width:900px){
+
+.hero{
+
+grid-template-columns:1fr;
+
+}
+
+.hero h1{
+
+font-size:40px;
+
+}
+
+.player-box iframe{
+
+height:260px;
+
+}
+
+nav{
+
+display:none;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="loader">
+
+<div class="loader-logo">▶</div>
+
+<div class="loader-text">MEDIA HUB</div>
+
+</div>
+
+<header>
+
+<div class="logo">
+
+<div class="logo-icon">▶</div>
+
+<span>MediaHub</span>
+
+</div>
+
+<nav>
+
+<a href="#home">Home</a>
+<a href="#playlists">Playlists</a>
+<a href="#viewer">Player</a>
+
+</nav>
+
+</header>
+
+<section class="hero fade" id="home">
+
+<div>
+
+<h1>All Your YouTube Playlists In One Premium Place</h1>
+
+<p>Watch Series, Movies, Songs and Phonk directly inside this website with a futuristic streaming experience.</p>
+
+<div class="search">
+
+<input id="searchInput" placeholder="Search playlist...">
+
+<button onclick="filterCards()">Search</button>
+
+</div>
+
+</div>
+
+<div class="hero-image">
+
+<img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1200&q=80">
+
+</div>
+
+</section>
+
+<h2 class="section-title fade" id="playlists">Featured Playlists</h2>
+
+<section class="grid">
+
+<div class="card fade" data-name="series">
+
+<img src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=800&q=80">
+
+<div class="card-body">
+
+<h3>📺 Series</h3>
+
+<p>Your favorite YouTube Series playlist.</p>
+
+<button onclick="loadPlaylist('PLcVLj6cwpfR8')">Watch Now</button>
+
+</div>
+
+</div>
+
+<div class="card fade" data-name="movie">
+
+<img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80">
+
+<div class="card-body">
+
+<h3>🎬 Movies</h3>
+
+<p>Enjoy movies directly inside the website.</p>
+
+<button onclick="loadPlaylist('PLXDuqePR61M8')">Watch Now</button>
+
+</div>
+
+</div>
+
+<div class="card fade" data-name="song">
+
+<img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=80">
+
+<div class="card-body">
+
+<h3>🎵 Songs</h3>
+
+<p>Listen without leaving the website.</p>
+
+<button onclick="loadPlaylist('PLXMivqZNGlmI5KTvOyHbtrK2ZW2jNLffA')">Play Now</button>
+
+</div>
+
+</div>
+
+<div class="card fade" data-name="phonk">
+
+<img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=800&q=80">
+
+<div class="card-body">
+
+<h3>🔥 Phonk</h3>
+
+<p>Dark premium phonk playlist.</p>
+
+<button onclick="loadPlaylist('PLXMivqZNGlmI5KTvOyHbtrK2ZW2jNLffA')">Play Now</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="viewer fade" id="viewer">
+
+<h2 style="margin-bottom:20px;font-size:34px;">Now Playing</h2>
+
+<div class="player-box">
+
+<iframe id="player"
+
+src="https://www.youtube.com/embed/videoseries?list=PLcVLj6cwpfR8"
+
+allowfullscreen
+
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+
+</iframe>
+
+</div>
+
+<div class="controls">
+
+<button onclick="fullscreenPlayer()">Fullscreen</button>
+
+<button onclick="openYT()">Open YouTube</button>
+
+<button onclick="copyLink()">Copy Playlist Link</button>
+
+</div>
+
+</section>
+
+<footer>
+
+© 2026 MediaHub • GitHub Pages Ready
+
+</footer>
+
+<script>
+
+let currentPlaylist="https://youtube.com/playlist?list=PLcVLj6cwpfR8";
+
+window.onload=()=>{
+
+setTimeout(()=>{
+
+loader.style.opacity="0";
+
+setTimeout(()=>loader.remove(),600);
+
+},1200);
+
+};
+
+function loadPlaylist(id){
+
+document.getElementById("player").src="https://www.youtube.com/embed/videoseries?list="+id;
+
+currentPlaylist="https://youtube.com/playlist?list="+id;
+
+document.getElementById("viewer").scrollIntoView({behavior:"smooth"});
+
+}
+
+function fullscreenPlayer(){
+
+const iframe=document.getElementById("player");
+
+if(iframe.requestFullscreen){
+
+iframe.requestFullscreen();
+
+}
+
+}
+
+function openYT(){
+
+window.open(currentPlaylist,"_blank");
+
+}
+
+function copyLink(){
+
+navigator.clipboard.writeText(currentPlaylist);
+
+alert("Playlist link copied!");
+
+}
+
+function filterCards(){
+
+const q=document.getElementById("searchInput").value.toLowerCase();
+
+document.querySelectorAll(".card").forEach(card=>{
+
+card.style.display=card.dataset.name.includes(q)?"block":"none";
+
+});
+
+}
+
+const observer=new IntersectionObserver(entries=>{
+
+entries.forEach(entry=>{
+
+if(entry.isIntersecting){
+
+entry.target.classList.add("show");
+
+}
+
+});
+
+},{threshold:.15});
+
+document.querySelectorAll(".fade").forEach(el=>observer.observe(el));
+
+</script>
+
+</body>
+</html>
